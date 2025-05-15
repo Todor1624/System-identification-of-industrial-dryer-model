@@ -1,0 +1,862 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>projekat_skripta</title><meta name="generator" content="MATLAB 9.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2024-06-01"><meta name="DC.source" content="projekat_skripta.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Zadatak 1&#1040;: Snimanje odziva sistema na step promenu upravljanja oko nominalne radne ta&#269;ke.</a></li><li><a href="#4">Zadatak 1B: Odre&#273;ivanje First Order plus Dead Time (FOPDT )aproksimacije sistema.</a></li><li><a href="#5">Zadatak 1C: Pododabiranje merenja procenjenom periodom odabiranja.</a></li><li><a href="#6">Zadatak 1D: Nala&#382;enje ARX1 modela diskretizacijom FOPDT aproksimacije sistema.</a></li><li><a href="#7">Zadatak 2&#1040;: Snimanje odziva na pobudne signale velikog reda perzistencije.</a></li><li><a href="#8">Pseudonasumi&#269;na binarna sekvenca (PRBS)</a></li><li><a href="#9">Bipolarna povorka (BP)</a></li><li><a href="#10">Zadatak 2B: Priprema snimljenih podataka za proces identifikacije</a></li></ul></div><pre class="codeinput">clearvars
+close <span class="string">all</span>
+clc
+</pre><h2 id="2">Zadatak 1&#1040;: Snimanje odziva sistema na step promenu upravljanja oko nominalne radne ta&#269;ke.</h2><pre class="codeinput"><span class="comment">% Definisanje parametara eksperimenta</span>
+u_step_vent = 3;
+t_step_vent = 200;
+t_step_nom = 15;
+u_nom_vent = 6;
+u_nom_temp = 4.5;
+sim_step = 0.01;
+</pre><pre class="codeinput"><span class="comment">% Snimljeni su rezultati eksperimenta perturbovanja sistema oko nominalne</span>
+<span class="comment">% radne ta&#269;ke.</span>
+load(<span class="string">"izlazna_merenja.mat"</span>)
+
+
+<span class="comment">% Izdvajanje rezultata simulacije</span>
+t_sim = out.y_out_vent.Time;
+t_end = t_sim(end);
+
+y_vent = out.y_out_vent.Data;
+u_vent = out.u_out_vent.Data;
+
+
+<span class="comment">% Snimljeni podaci su veoma za&#353;umljeni. Potrebno je filtrirati ih pre dalje</span>
+<span class="comment">% primene.</span>
+
+y_filt_vent = doFilter(y_vent, 0.985);
+
+figure(1)
+
+plot(t_sim,y_vent, <span class="string">'Color'</span>,<span class="string">'r'</span>); hold <span class="string">all</span>;
+plot(t_sim,y_filt_vent, <span class="string">'Color'</span>,<span class="string">'blue'</span>);
+plot(t_sim,u_vent, <span class="string">'Color'</span>,<span class="string">'black'</span>, LineStyle=<span class="string">'--'</span>)
+
+xlim([180 220]);
+ylim([4 9.5]);
+grid <span class="string">on</span>
+
+xlabel(<span class="string">"Vreme [s]"</span>);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+legend(<span class="string">"Nefiltrirano merenje"</span>, <span class="string">"Filtrirano merenje"</span>, <span class="string">"Upravljanje"</span>,<span class="keyword">...</span>
+    <span class="string">'Location'</span>,<span class="string">'northwest'</span>)
+
+title([<span class="string">"Prikaz zadate sekvence upravljanja"</span>; <span class="string">"i odziva sistema (STEP pobuda)"</span>])
+</pre><img vspace="5" hspace="5" src="projekat_skripta_01.png" alt=""> <h2 id="4">Zadatak 1B: Odre&#273;ivanje First Order plus Dead Time (FOPDT )aproksimacije sistema.</h2><pre class="codeinput"><span class="comment">% Dinamika sistema estimirana je na osnovu usponskog vremena, poja&#269;anja u</span>
+<span class="comment">% stacionarnom stanju.</span>
+
+
+<span class="comment">% Poja&#269;anje se estimira kao odnos srednje vrednosti signala u stacionarnom</span>
+<span class="comment">% stanju i intenziteta pobude.</span>
+
+y_0 = mean(y_filt_vent(t_sim &lt; 200));
+y_end = mean(y_filt_vent(t_sim&gt;210));
+
+u_0 = u_nom_vent;
+u_end = u_nom_vent + u_step_vent;
+
+delta_y = y_end - y_0;
+delta_u = u_end - u_0;
+
+Kp = delta_y/delta_u;
+
+<span class="comment">% Vizualnom inspekciom ne prime&#263;uje se zna&#269;ajno transportno ka&#353;njenje, tako</span>
+<span class="comment">% da se ono ne&#263;e ura&#269;unati u aproksimaciju.</span>
+
+<span class="comment">% Usponsko vreme se ra&#269;una kao vreme od zadavanja pobude (pretpostavlja se da nema transportnog ka&#353;njenja)</span>
+<span class="comment">% do dostizanja 63% vrednosti signala u stacionarnom stanju.</span>
+
+y_63 = y_0 + delta_y*0.63;
+
+t_0 = find(t_sim &gt; 200, 1, <span class="string">'first'</span>);
+t_63 = find(y_filt_vent(t_0:end) &gt; y_63, 1, <span class="string">'first'</span>);
+t_63 = t_0 + t_63;
+
+<span class="comment">% U sistemima sa jednim polom se dominantna vremenska konstanta mo&#382;e uzeti</span>
+<span class="comment">% ista kao vreme uspona.</span>
+
+t_63 = t_sim(t_63) - t_sim(t_0);
+
+s = tf(<span class="string">'s'</span>);
+G_fopdt = Kp/(s*t_63 + 1);
+
+<span class="comment">% Perioda odabiranja se bira tako da obuhvati 20 odbiraka signala tokom</span>
+<span class="comment">% usponskog vremena (konzervativno).</span>
+
+
+T_samp = t_63/20;
+
+
+figure(2)
+
+u_model = u_step_vent * ones(length(y_filt_vent(t_0:end)), 1);
+y_model = lsim(G_fopdt,u_model,t_sim(t_0:end));
+
+plot(t_sim(t_0:end), y_model + y_0, <span class="string">"Color"</span>,<span class="string">"blue"</span>, linewidth = 1.2); hold <span class="string">all</span>
+plot(t_sim(t_0:end), y_filt_vent(t_0:end), <span class="string">"Color"</span>,<span class="string">"red"</span>)
+grid <span class="string">on</span>;
+xlim([200 t_end]);
+
+xlabel(<span class="string">"Vreme [s]"</span>);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+legend(<span class="string">"Odziv FOPDT modela"</span>, <span class="string">"Filtriran odziv merenja"</span>,<span class="keyword">...</span>
+    <span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+title(<span class="string">" Pore&#273;enje odziva filtriranog merenja i FOPDT modela"</span>)
+</pre><img vspace="5" hspace="5" src="projekat_skripta_02.png" alt=""> <h2 id="5">Zadatak 1C: Pododabiranje merenja procenjenom periodom odabiranja.</h2><pre class="codeinput"><span class="comment">% Odlu&#269;eno je izvr&#353;iti pododabiranje merenja, budu&#263;i da je izabrana perioda</span>
+<span class="comment">% odabiranja i vi&#353;e nego dovoljna da obuhvati klju&#269;nu dinamiku sistema.</span>
+
+clc
+
+
+T_samp = t_63/20;
+
+t_resampled = 0:T_samp:t_sim(end);
+
+N_resampled = ceil(length(y_filt_vent)/length(t_resampled));
+
+y_resampled = y_filt_vent(1:N_resampled:end);
+t_resampled = t_sim(1:N_resampled:end);
+u_resampled= u_vent(1:N_resampled:end);
+T_samp = t_resampled(2) - t_resampled(1);
+
+<span class="comment">% Odnos du&#382;ina vektora merenja i vektora uniformnih vremenskih odbiraka</span>
+<span class="comment">% mora biti, tako da se radi blaga korekcija periode odabiranja. Odnos</span>
+<span class="comment">% dominantne vremenske konstante i perioda odabiranja je promenjen na</span>
+<span class="comment">% 17.85, &#353;to je i dalje vi&#353;e nego dovoljno.</span>
+
+figure
+plot(t_sim, y_filt_vent,<span class="string">'Color'</span>, <span class="string">'blue'</span>); hold <span class="string">all</span>
+plot(t_resampled, y_resampled, <span class="string">'Color'</span>, <span class="string">'magenta'</span>, Marker=<span class="string">'*'</span>);
+
+xlim([150, 152]);
+ylim([5.3, 5.7]);
+
+xlabel(<span class="string">"Vreme [s]"</span>);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+legend(<span class="string">"Snimljeno u 25001 ta&#269;aka"</span>, <span class="string">"Pododabiranje sa 3572 ta&#269;aka"</span>,<span class="keyword">...</span>
+    <span class="string">'Location'</span>,<span class="string">'northeast'</span>)
+title(<span class="string">"Zumirani prikaz filtriranih merenja pre i nakon pododabiranja"</span>)
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="projekat_skripta_03.png" alt=""> <h2 id="6">Zadatak 1D: Nala&#382;enje ARX1 modela diskretizacijom FOPDT aproksimacije sistema.</h2><pre class="codeinput">a1 = exp(pole(G_fopdt)*T_samp);
+z = tf(<span class="string">'z'</span>, T_samp);
+
+G_fopdt_arx1 = Kp*(1-a1)/(z - a1);
+
+
+y_model = lsim(u_resampled,G_fopdt,t_resampled);
+y_model_arx1 = lsim(u_resampled,G_fopdt_arx1,t_resampled);
+
+figure
+subplot(2,1,1)
+plot(t_resampled,y_model,LineWidth=1.2,LineStyle=<span class="string">"--"</span>, Color=<span class="string">'r'</span>); hold <span class="string">all</span>
+stairs(t_resampled,y_model_arx1,LineWidth=1, Color=<span class="string">'blue'</span>);
+xlim([200 210]);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+title(<span class="string">"Uticaj diskretizacije na aproksimaciju prvog reda"</span>)
+grid <span class="string">on</span>;
+legend(<span class="string">"Kontinualni FOPDT model"</span>, <span class="string">"ARX1 model"</span>, <span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+
+subplot(2,1,2)
+plot(t_resampled,y_model,LineWidth=1.2,LineStyle=<span class="string">"--"</span>, Color=<span class="string">'r'</span>); hold <span class="string">all</span>
+stairs(t_resampled,y_model_arx1,LineWidth=1, Color=<span class="string">'blue'</span>);
+xlim([200 201]);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+xlabel(<span class="string">"Vreme [s]"</span>)
+xlabel(<span class="string">""</span>)
+grid <span class="string">on</span>;
+</pre><img vspace="5" hspace="5" src="projekat_skripta_04.png" alt=""> <h2 id="7">Zadatak 2&#1040;: Snimanje odziva na pobudne signale velikog reda perzistencije.</h2><h2 id="8">Pseudonasumi&#269;na binarna sekvenca (PRBS)</h2><pre class="codeinput">T_prekidanje = 5;
+N_reg = 10;
+u_max = 3;
+t_end = 400;
+t_prbs = 250;
+
+load(<span class="string">"PRBS_merenje.mat"</span>);
+
+<span class="comment">% U ovom zadatku, cilj je identifikacija sistema koji je opisan protokom u tunelu</span>
+<span class="comment">% industrijske su&#353;are koriste&#263;i ARX modele prvog i drugog reda. Prvi korak je akvizicija</span>
+<span class="comment">% merenja protoka kada je sistem doveden u nominalno stanje i pobu&#273;en</span>
+<span class="comment">% signalom velikog stepena perzistencije. Prvi signal koji &#263;e se koristiti</span>
+<span class="comment">% za ovu namenu je PRBS.</span>
+
+<span class="comment">% Parametri ovakvog pobudnog signala su perioda prekidanja, trajanje, broj</span>
+<span class="comment">% prekida&#269;kih registara i amplituda. Prva dva parametara odre&#273;uju du&#382;inu</span>
+<span class="comment">% sekvence i zajedno sa tre&#263;im diktiraju koji je frekvencijski opseg</span>
+<span class="comment">% validne estimacije. Amplituda se bira tako da se sistem odr&#382;i u uskom</span>
+<span class="comment">% opsegu oko nominalne radne ta&#269;ke.</span>
+
+<span class="comment">% Trajanje je zadato a trajanje periode se bira tako da je obuhva&#263;eno vreme</span>
+<span class="comment">% uspona i smirenja odziva. Kombinacijama registara koji u&#269;estvuju u zbiru</span>
+<span class="comment">% po modulu 2 se posti&#382;u razli&#269;iti nivoi perzistencije. Za potrebe ovog</span>
+<span class="comment">% zadatka PRBS ostvaruje dovoljan nivo perzistencije u ve&#263;ini slu&#269;ajeva,</span>
+<span class="comment">% budu&#263;i da se ne estimira vi&#353;e od tri parametara.</span>
+
+<span class="comment">% Opis sprovedenog eksperimenta je slede&#263;i:</span>
+<span class="comment">% 1. Dovo&#273;enje sistema u nominalan radan re&#382;im [0 - 200] s.</span>
+<span class="comment">% 2. Zadavanje step perturbacije inteziteta 3 V [200 - 250] s.</span>
+<span class="comment">% 3. Zadavanje unipolarne PRBS perturbacije amplitude 3V [250 - 400] s.</span>
+
+<span class="comment">% Snimljeni podaci se prikazuju filtrirani, na isti na&#269;in kao merenja u</span>
+<span class="comment">% zadatku 1.</span>
+
+figure
+plot(t_prbs_vent,u_prbs_vent, Color=<span class="string">'black'</span>, LineStyle=<span class="string">"--"</span>); hold <span class="string">all</span>
+plot(t_prbs_vent,y_prbs_vent, Color=<span class="string">'r'</span>, LineWidth=1.2);
+grid <span class="string">on</span>;
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+ylim([4.5 9.5])
+xlabel(<span class="string">"Vreme [s]"</span>)
+title([<span class="string">"Prikaz zadate sekvence upravljanja"</span>; <span class="string">"i odziva sistema (PRBS pobuda)"</span>])
+legend([<span class="string">"Upravlja&#269;ka sekvenca"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+
+figure
+plot(t_prbs_temp,u_prbs_temp, Color=<span class="string">'black'</span>, LineStyle=<span class="string">"--"</span>); hold <span class="string">all</span>
+plot(t_prbs_temp,y_prbs_temp, Color=<span class="string">'r'</span>, LineWidth=1.2);
+grid <span class="string">on</span>;
+ylabel(<span class="string">"Temperatura vazduha u tunelu [V]"</span>)
+ylim([2.5 5])
+xlabel(<span class="string">"Vreme [s]"</span>)
+title(<span class="string">"Odziv temperature na zadato nominalno upravljanje"</span>)
+legend([<span class="string">"Nominalno upravljanje"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+</pre><img vspace="5" hspace="5" src="projekat_skripta_05.png" alt=""> <img vspace="5" hspace="5" src="projekat_skripta_06.png" alt=""> <h2 id="9">Bipolarna povorka (BP)</h2><pre class="codeinput">T_prekidanje = 10;
+u_max = 3;
+t_end = 400;
+t_bp = 250;
+
+load(<span class="string">'BP_merenje.mat'</span>)
+
+<span class="comment">% Cilj ovog eksperimenta se podudara sa prethodnim. U ovom slu&#269;aju se</span>
+<span class="comment">% umesto PRBS pobude koristi pobuda &#269;etvrtkama koje su istih &#353;irina.</span>
+<span class="comment">% Bira se manje parametara u pore&#273;enju sa PRBS-om (perioda prekidanja i</span>
+<span class="comment">% amplituda) a pristup pri izboru je identi&#269;an.</span>
+
+<span class="comment">% Eksperiment se izvodi isto kao sa PRBS pobudom sa filtriranjem merenja.</span>
+
+figure
+plot(t_bp_vent,u_bp_vent, Color=<span class="string">'black'</span>, LineStyle=<span class="string">"--"</span>); hold <span class="string">all</span>
+plot(t_bp_vent,y_bp_vent, Color=<span class="string">'r'</span>, LineWidth=1.2);
+grid <span class="string">on</span>;
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+ylim([4.5 9.5])
+xlabel(<span class="string">"Vreme [s]"</span>)
+title([<span class="string">"Prikaz zadate sekvence upravljanja"</span>; <span class="string">"i odziva sistema (BIPOLARNA pobuda)"</span>])
+legend([<span class="string">"Upravlja&#269;ka sekvenca"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+
+figure
+plot(t_bp_temp,u_bp_temp, Color=<span class="string">'black'</span>, LineStyle=<span class="string">"--"</span>); hold <span class="string">all</span>
+plot(t_bp_temp,y_bp_temp, Color=<span class="string">'r'</span>, LineWidth=1.2);
+grid <span class="string">on</span>;
+ylabel(<span class="string">"Temperatura vazduha u tunelu [V]"</span>)
+ylim([2.5 5])
+xlabel(<span class="string">"Vreme [s]"</span>)
+title(<span class="string">"Odziv temperature na zadato nominalno upravljanje"</span>)
+legend([<span class="string">"Nominalno upravljanje"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+</pre><img vspace="5" hspace="5" src="projekat_skripta_07.png" alt=""> <img vspace="5" hspace="5" src="projekat_skripta_08.png" alt=""> <h2 id="10">Zadatak 2B: Priprema snimljenih podataka za proces identifikacije</h2><pre class="codeinput"><span class="comment">% U narednim koracima se vr&#353;i dalja obrada snimljenih podataka, nakon</span>
+<span class="comment">% izvr&#353;enog filtriranja.</span>
+
+<span class="comment">% Izdvajanje dela odziva na pobudu visokog reda perzistencije (samo PRBS i BP)</span>
+
+load(<span class="string">"PRBS_merenje.mat"</span>);
+load(<span class="string">"BP_merenje.mat"</span>);
+
+t_180 = find(t_prbs_vent&gt;180,1,<span class="string">'first'</span>);
+t_prbs_vent = t_prbs_vent(t_180:end);
+y_prbs_vent = y_prbs_vent(t_180:end);
+u_prbs_vent = u_prbs_vent(t_180:end);
+
+
+t_180 = find(t_bp_vent&gt;180,1,<span class="string">'first'</span>);
+t_bp_vent = t_bp_vent(t_180:end);
+y_bp_vent = y_bp_vent(t_180:end);
+u_bp_vent = u_bp_vent(t_180:end);
+
+<span class="comment">% Detrending (izbacivanje srednjih srednjih vrednosti)</span>
+
+y_bp_vent = y_bp_vent - mean(y_bp_vent);
+u_bp_vent = u_bp_vent - mean(u_bp_vent);
+
+y_prbs_vent = y_prbs_vent - mean(y_prbs_vent);
+u_prbs_vent = u_prbs_vent - mean(u_prbs_vent);
+
+<span class="comment">% Procena ka&#353;njenja kori&#353;&#263;enjem kroskorelacije za izolovan deo merenja</span>
+
+t_220 = find(t_prbs_vent&gt;220,1,<span class="string">'first'</span>);
+tau = length(1:t_220)/2;
+rxy_prbs = kroskorelacija(y_prbs_vent(1:t_220),u_prbs_vent(1:t_220),tau);
+rxy_bp = kroskorelacija(y_bp_vent(1:t_220),u_bp_vent(1:t_220),tau);
+tau_arr = -tau:tau;
+
+tau_max_prbs = tau_arr(find(rxy_prbs==max(rxy_prbs),1,<span class="string">'first'</span>));
+tau_max_bp = tau_arr(find(rxy_bp==max(rxy_bp),1,<span class="string">'first'</span>));
+
+figure
+subplot(2,1,1)
+plot(t_prbs_vent(1:t_220),u_prbs_vent(1:t_220),LineStyle=<span class="string">"--"</span>,Color=<span class="string">"black"</span>); hold <span class="string">all</span>
+plot(t_prbs_vent(1:t_220),y_prbs_vent(1:t_220),Color=<span class="string">"blue"</span>);
+grid <span class="string">on</span>
+xlim([180 220])
+xlabel(<span class="string">"Vreme [s]"</span>);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+title([<span class="string">"Ocena transportnog ka&#353;njenja na osnovu kroskorelacije"</span>;<span class="string">"(pre PRBS pobude)"</span>])
+
+subplot(2,1,2)
+plot(tau_arr, rxy_prbs, Color=<span class="string">"blue"</span>);
+grid <span class="string">on</span>
+xlabel(<span class="string">"Ka&#353;njenje [odb]"</span>);
+ylabel(<span class="string">"Kroskorelacija ulaz / izlaz"</span>);
+xlim([-100 100])
+ylim([0.4 1])
+
+text(40,1.1,strcat(<span class="string">"Ka&#353;njenje [s] = "</span>, num2str(tau_max_prbs*T_samp)))
+
+
+
+figure
+subplot(2,1,1)
+plot(t_bp_vent(1:t_220),u_bp_vent(1:t_220),LineStyle=<span class="string">"--"</span>,Color=<span class="string">"black"</span>); hold <span class="string">all</span>
+plot(t_bp_vent(1:t_220),y_bp_vent(1:t_220),Color=<span class="string">"blue"</span>);
+grid <span class="string">on</span>
+xlim([180 220])
+xlabel(<span class="string">"Vreme [s]"</span>);
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+title([<span class="string">"Ocena transportnog ka&#353;njenja na osnovu kroskorelacije"</span>;<span class="string">"(pre BP pobude)"</span>])
+
+subplot(2,1,2)
+plot(tau_arr, rxy_bp, Color=<span class="string">"blue"</span>);
+grid <span class="string">on</span>
+xlabel(<span class="string">"Ka&#353;njenje [odb]"</span>);
+ylabel(<span class="string">"Kroskorelacija ulaz / izlaz"</span>);
+xlim([-100 100])
+ylim([0.4 0.9])
+
+text(40,0.98,strcat(<span class="string">"Ka&#353;njenje [s] = "</span>, num2str(tau_max_bp*T_samp)))
+</pre><img vspace="5" hspace="5" src="projekat_skripta_09.png" alt=""> <img vspace="5" hspace="5" src="projekat_skripta_10.png" alt=""> <pre class="codeinput"><span class="comment">% Procenjena ka&#353;njenja se uklanjaju iz identifikacionih objekata.</span>
+
+y_prbs_id = y_prbs_vent(tau_max_prbs:end);
+u_prbs_id = u_prbs_vent(1:end-tau_max_prbs+1);
+y_bp_id = y_bp_vent(tau_max_bp:end);
+u_bp_id = u_bp_vent(1:end-tau_max_bp+1);
+
+t_prbs_id = t_prbs_vent(1:end-tau_max_prbs+1);
+t_bp_id = t_bp_vent(1:end-tau_max_bp+1);
+
+<span class="comment">% Na kraju se od obra&#273;enih merenja odziva i upravljanja pravi ID objekat</span>
+id_data_prbs = iddata(y_prbs_id,u_prbs_id,T_samp);
+id_data_bp = iddata(y_bp_id,u_bp_id,T_samp);
+
+figure
+subplot(2,1,1)
+plot(t_prbs_id,u_prbs_id,LineStyle=<span class="string">"--"</span>,Color=<span class="string">"black"</span>); hold <span class="string">all</span>
+plot(t_prbs_id,y_prbs_id,Color=<span class="string">"blue"</span>);
+xlim([t_prbs_id(1) t_prbs_id(end)])
+ylim([-2 3])
+grid <span class="string">on</span>
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+legend([<span class="string">"Upravlja&#269;ka sekvenca (PRBS)"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+title(<span class="string">"Kona&#269;ne vremenske serije podataka za identifikaciju"</span>)
+subplot(2,1,2)
+
+plot(t_bp_id,u_bp_id,LineStyle=<span class="string">"--"</span>,Color=<span class="string">"black"</span>); hold <span class="string">all</span>
+plot(t_bp_id,y_bp_id,Color=<span class="string">"blue"</span>);
+xlim([t_prbs_id(1) t_prbs_id(end)])
+ylim([-2 3])
+grid <span class="string">on</span>
+ylabel(<span class="string">"Protok vazduha u tunelu [V]"</span>)
+legend([<span class="string">"Upravlja&#269;ka sekvenca (BP)"</span>, <span class="string">"Odziv sistema"</span>], <span class="string">'Location'</span>, <span class="string">'northwest'</span>)
+
+<span class="comment">% figure;</span>
+<span class="comment">% plot(iddata_prbs);</span>
+<span class="comment">% title("IDDATA objekat za sistem pobudjen PRBS signalom")</span>
+<span class="comment">% figure;</span>
+<span class="comment">% plot(iddata_bp);</span>
+<span class="comment">% title("IDDATA objekat za sistem pobudjen bipolarnom povorkom")</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">% %%</span>
+</pre><img vspace="5" hspace="5" src="projekat_skripta_11.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clearvars
+close all
+clc
+
+
+
+
+
+
+%% Zadatak 1А: Snimanje odziva sistema na step promenu upravljanja oko nominalne radne tačke.
+
+% Definisanje parametara eksperimenta
+u_step_vent = 3;
+t_step_vent = 200;
+t_step_nom = 15;
+u_nom_vent = 6;
+u_nom_temp = 4.5;
+sim_step = 0.01;
+%%
+
+% Snimljeni su rezultati eksperimenta perturbovanja sistema oko nominalne
+% radne tačke.
+load("izlazna_merenja.mat")
+
+
+% Izdvajanje rezultata simulacije
+t_sim = out.y_out_vent.Time;
+t_end = t_sim(end);
+
+y_vent = out.y_out_vent.Data;
+u_vent = out.u_out_vent.Data;
+
+
+% Snimljeni podaci su veoma zašumljeni. Potrebno je filtrirati ih pre dalje
+% primene.
+
+y_filt_vent = doFilter(y_vent, 0.985);
+
+figure(1)
+
+plot(t_sim,y_vent, 'Color','r'); hold all;
+plot(t_sim,y_filt_vent, 'Color','blue');
+plot(t_sim,u_vent, 'Color','black', LineStyle='REPLACE_WITH_DASH_DASH')
+
+xlim([180 220]);
+ylim([4 9.5]);
+grid on
+
+xlabel("Vreme [s]");
+ylabel("Protok vazduha u tunelu [V]")
+legend("Nefiltrirano merenje", "Filtrirano merenje", "Upravljanje",...
+    'Location','northwest')
+
+title(["Prikaz zadate sekvence upravljanja"; "i odziva sistema (STEP pobuda)"])
+
+
+%% Zadatak 1B: Određivanje First Order plus Dead Time (FOPDT )aproksimacije sistema. 
+
+% Dinamika sistema estimirana je na osnovu usponskog vremena, pojačanja u
+% stacionarnom stanju.
+
+
+% Pojačanje se estimira kao odnos srednje vrednosti signala u stacionarnom
+% stanju i intenziteta pobude.
+
+y_0 = mean(y_filt_vent(t_sim < 200));
+y_end = mean(y_filt_vent(t_sim>210));
+
+u_0 = u_nom_vent;
+u_end = u_nom_vent + u_step_vent;
+
+delta_y = y_end - y_0;
+delta_u = u_end - u_0;
+
+Kp = delta_y/delta_u; 
+
+% Vizualnom inspekciom ne primećuje se značajno transportno kašnjenje, tako
+% da se ono neće uračunati u aproksimaciju.
+
+% Usponsko vreme se računa kao vreme od zadavanja pobude (pretpostavlja se da nema transportnog kašnjenja)
+% do dostizanja 63% vrednosti signala u stacionarnom stanju.
+
+y_63 = y_0 + delta_y*0.63;
+
+t_0 = find(t_sim > 200, 1, 'first');
+t_63 = find(y_filt_vent(t_0:end) > y_63, 1, 'first');
+t_63 = t_0 + t_63;
+
+% U sistemima sa jednim polom se dominantna vremenska konstanta može uzeti
+% ista kao vreme uspona.
+
+t_63 = t_sim(t_63) - t_sim(t_0); 
+
+s = tf('s');
+G_fopdt = Kp/(s*t_63 + 1);
+
+% Perioda odabiranja se bira tako da obuhvati 20 odbiraka signala tokom
+% usponskog vremena (konzervativno).
+
+
+T_samp = t_63/20;
+
+
+figure(2)
+
+u_model = u_step_vent * ones(length(y_filt_vent(t_0:end)), 1);
+y_model = lsim(G_fopdt,u_model,t_sim(t_0:end));
+
+plot(t_sim(t_0:end), y_model + y_0, "Color","blue", linewidth = 1.2); hold all
+plot(t_sim(t_0:end), y_filt_vent(t_0:end), "Color","red")
+grid on;
+xlim([200 t_end]);
+
+xlabel("Vreme [s]");
+ylabel("Protok vazduha u tunelu [V]")
+legend("Odziv FOPDT modela", "Filtriran odziv merenja",...
+    'Location','southeast')
+title(" Poređenje odziva filtriranog merenja i FOPDT modela")
+
+%% Zadatak 1C: Pododabiranje merenja procenjenom periodom odabiranja.
+
+% Odlučeno je izvršiti pododabiranje merenja, budući da je izabrana perioda
+% odabiranja i više nego dovoljna da obuhvati ključnu dinamiku sistema.
+
+clc
+
+
+T_samp = t_63/20;                  
+
+t_resampled = 0:T_samp:t_sim(end);
+
+N_resampled = ceil(length(y_filt_vent)/length(t_resampled));
+
+y_resampled = y_filt_vent(1:N_resampled:end);
+t_resampled = t_sim(1:N_resampled:end); 
+u_resampled= u_vent(1:N_resampled:end);
+T_samp = t_resampled(2) - t_resampled(1);
+
+% Odnos dužina vektora merenja i vektora uniformnih vremenskih odbiraka
+% mora biti, tako da se radi blaga korekcija periode odabiranja. Odnos
+% dominantne vremenske konstante i perioda odabiranja je promenjen na
+% 17.85, što je i dalje više nego dovoljno.
+
+figure
+plot(t_sim, y_filt_vent,'Color', 'blue'); hold all
+plot(t_resampled, y_resampled, 'Color', 'magenta', Marker='*');
+
+xlim([150, 152]);
+ylim([5.3, 5.7]);
+
+xlabel("Vreme [s]");
+ylabel("Protok vazduha u tunelu [V]")
+legend("Snimljeno u 25001 tačaka", "Pododabiranje sa 3572 tačaka",...
+    'Location','northeast')
+title("Zumirani prikaz filtriranih merenja pre i nakon pododabiranja")
+grid on;
+
+%% Zadatak 1D: Nalaženje ARX1 modela diskretizacijom FOPDT aproksimacije sistema.
+
+
+
+a1 = exp(pole(G_fopdt)*T_samp);
+z = tf('z', T_samp);
+
+G_fopdt_arx1 = Kp*(1-a1)/(z - a1);
+
+
+y_model = lsim(u_resampled,G_fopdt,t_resampled); 
+y_model_arx1 = lsim(u_resampled,G_fopdt_arx1,t_resampled); 
+
+figure
+subplot(2,1,1)
+plot(t_resampled,y_model,LineWidth=1.2,LineStyle="REPLACE_WITH_DASH_DASH", Color='r'); hold all
+stairs(t_resampled,y_model_arx1,LineWidth=1, Color='blue');
+xlim([200 210]);
+ylabel("Protok vazduha u tunelu [V]")
+title("Uticaj diskretizacije na aproksimaciju prvog reda")
+grid on;
+legend("Kontinualni FOPDT model", "ARX1 model", 'Location','southeast')
+
+subplot(2,1,2)
+plot(t_resampled,y_model,LineWidth=1.2,LineStyle="REPLACE_WITH_DASH_DASH", Color='r'); hold all
+stairs(t_resampled,y_model_arx1,LineWidth=1, Color='blue');
+xlim([200 201]);
+ylabel("Protok vazduha u tunelu [V]")
+xlabel("Vreme [s]")
+xlabel("")
+grid on;
+
+%% Zadatak 2А: Snimanje odziva na pobudne signale velikog reda perzistencije.
+
+%% Pseudonasumična binarna sekvenca (PRBS)
+
+T_prekidanje = 5;
+N_reg = 10;
+u_max = 3;
+t_end = 400;
+t_prbs = 250;
+
+load("PRBS_merenje.mat");
+
+% U ovom zadatku, cilj je identifikacija sistema koji je opisan protokom u tunelu
+% industrijske sušare koristeći ARX modele prvog i drugog reda. Prvi korak je akvizicija
+% merenja protoka kada je sistem doveden u nominalno stanje i pobuđen
+% signalom velikog stepena perzistencije. Prvi signal koji će se koristiti
+% za ovu namenu je PRBS. 
+
+% Parametri ovakvog pobudnog signala su perioda prekidanja, trajanje, broj
+% prekidačkih registara i amplituda. Prva dva parametara određuju dužinu
+% sekvence i zajedno sa trećim diktiraju koji je frekvencijski opseg
+% validne estimacije. Amplituda se bira tako da se sistem održi u uskom
+% opsegu oko nominalne radne tačke.
+
+% Trajanje je zadato a trajanje periode se bira tako da je obuhvaćeno vreme
+% uspona i smirenja odziva. Kombinacijama registara koji učestvuju u zbiru
+% po modulu 2 se postižu različiti nivoi perzistencije. Za potrebe ovog
+% zadatka PRBS ostvaruje dovoljan nivo perzistencije u većini slučajeva,
+% budući da se ne estimira više od tri parametara. 
+
+% Opis sprovedenog eksperimenta je sledeći:
+% 1. Dovođenje sistema u nominalan radan režim [0 - 200] s.
+% 2. Zadavanje step perturbacije inteziteta 3 V [200 - 250] s.
+% 3. Zadavanje unipolarne PRBS perturbacije amplitude 3V [250 - 400] s.
+
+% Snimljeni podaci se prikazuju filtrirani, na isti način kao merenja u
+% zadatku 1.
+
+figure
+plot(t_prbs_vent,u_prbs_vent, Color='black', LineStyle="REPLACE_WITH_DASH_DASH"); hold all
+plot(t_prbs_vent,y_prbs_vent, Color='r', LineWidth=1.2);
+grid on;
+ylabel("Protok vazduha u tunelu [V]")
+ylim([4.5 9.5])
+xlabel("Vreme [s]")
+title(["Prikaz zadate sekvence upravljanja"; "i odziva sistema (PRBS pobuda)"])
+legend(["Upravljačka sekvenca", "Odziv sistema"], 'Location', 'northwest')
+
+figure
+plot(t_prbs_temp,u_prbs_temp, Color='black', LineStyle="REPLACE_WITH_DASH_DASH"); hold all
+plot(t_prbs_temp,y_prbs_temp, Color='r', LineWidth=1.2);
+grid on;
+ylabel("Temperatura vazduha u tunelu [V]")
+ylim([2.5 5])
+xlabel("Vreme [s]")
+title("Odziv temperature na zadato nominalno upravljanje")
+legend(["Nominalno upravljanje", "Odziv sistema"], 'Location', 'northwest')
+
+
+%% Bipolarna povorka (BP)
+
+T_prekidanje = 10;
+u_max = 3;
+t_end = 400;
+t_bp = 250;
+
+load('BP_merenje.mat')
+
+% Cilj ovog eksperimenta se podudara sa prethodnim. U ovom slučaju se
+% umesto PRBS pobude koristi pobuda četvrtkama koje su istih širina.
+% Bira se manje parametara u poređenju sa PRBS-om (perioda prekidanja i
+% amplituda) a pristup pri izboru je identičan.
+
+% Eksperiment se izvodi isto kao sa PRBS pobudom sa filtriranjem merenja.
+
+figure
+plot(t_bp_vent,u_bp_vent, Color='black', LineStyle="REPLACE_WITH_DASH_DASH"); hold all
+plot(t_bp_vent,y_bp_vent, Color='r', LineWidth=1.2);
+grid on;
+ylabel("Protok vazduha u tunelu [V]")
+ylim([4.5 9.5])
+xlabel("Vreme [s]")
+title(["Prikaz zadate sekvence upravljanja"; "i odziva sistema (BIPOLARNA pobuda)"])
+legend(["Upravljačka sekvenca", "Odziv sistema"], 'Location', 'northwest')
+
+figure
+plot(t_bp_temp,u_bp_temp, Color='black', LineStyle="REPLACE_WITH_DASH_DASH"); hold all
+plot(t_bp_temp,y_bp_temp, Color='r', LineWidth=1.2);
+grid on;
+ylabel("Temperatura vazduha u tunelu [V]")
+ylim([2.5 5])
+xlabel("Vreme [s]")
+title("Odziv temperature na zadato nominalno upravljanje")
+legend(["Nominalno upravljanje", "Odziv sistema"], 'Location', 'northwest')
+
+
+%% Zadatak 2B: Priprema snimljenih podataka za proces identifikacije
+
+% U narednim koracima se vrši dalja obrada snimljenih podataka, nakon
+% izvršenog filtriranja. 
+
+% Izdvajanje dela odziva na pobudu visokog reda perzistencije (samo PRBS i BP)
+
+load("PRBS_merenje.mat");
+load("BP_merenje.mat");
+
+t_180 = find(t_prbs_vent>180,1,'first');
+t_prbs_vent = t_prbs_vent(t_180:end);
+y_prbs_vent = y_prbs_vent(t_180:end);
+u_prbs_vent = u_prbs_vent(t_180:end);
+
+
+t_180 = find(t_bp_vent>180,1,'first');
+t_bp_vent = t_bp_vent(t_180:end);
+y_bp_vent = y_bp_vent(t_180:end);
+u_bp_vent = u_bp_vent(t_180:end);
+
+% Detrending (izbacivanje srednjih srednjih vrednosti)
+
+y_bp_vent = y_bp_vent - mean(y_bp_vent);
+u_bp_vent = u_bp_vent - mean(u_bp_vent);
+
+y_prbs_vent = y_prbs_vent - mean(y_prbs_vent);
+u_prbs_vent = u_prbs_vent - mean(u_prbs_vent);
+
+% Procena kašnjenja korišćenjem kroskorelacije za izolovan deo merenja
+
+t_220 = find(t_prbs_vent>220,1,'first');
+tau = length(1:t_220)/2;
+rxy_prbs = kroskorelacija(y_prbs_vent(1:t_220),u_prbs_vent(1:t_220),tau);
+rxy_bp = kroskorelacija(y_bp_vent(1:t_220),u_bp_vent(1:t_220),tau);
+tau_arr = -tau:tau;
+
+tau_max_prbs = tau_arr(find(rxy_prbs==max(rxy_prbs),1,'first'));
+tau_max_bp = tau_arr(find(rxy_bp==max(rxy_bp),1,'first'));
+
+figure
+subplot(2,1,1)
+plot(t_prbs_vent(1:t_220),u_prbs_vent(1:t_220),LineStyle="REPLACE_WITH_DASH_DASH",Color="black"); hold all
+plot(t_prbs_vent(1:t_220),y_prbs_vent(1:t_220),Color="blue");
+grid on
+xlim([180 220])
+xlabel("Vreme [s]");
+ylabel("Protok vazduha u tunelu [V]")
+title(["Ocena transportnog kašnjenja na osnovu kroskorelacije";"(pre PRBS pobude)"])
+
+subplot(2,1,2)
+plot(tau_arr, rxy_prbs, Color="blue");
+grid on
+xlabel("Kašnjenje [odb]");
+ylabel("Kroskorelacija ulaz / izlaz");
+xlim([-100 100])
+ylim([0.4 1])
+
+text(40,1.1,strcat("Kašnjenje [s] = ", num2str(tau_max_prbs*T_samp)))
+
+
+
+figure
+subplot(2,1,1)
+plot(t_bp_vent(1:t_220),u_bp_vent(1:t_220),LineStyle="REPLACE_WITH_DASH_DASH",Color="black"); hold all
+plot(t_bp_vent(1:t_220),y_bp_vent(1:t_220),Color="blue");
+grid on
+xlim([180 220])
+xlabel("Vreme [s]");
+ylabel("Protok vazduha u tunelu [V]")
+title(["Ocena transportnog kašnjenja na osnovu kroskorelacije";"(pre BP pobude)"])
+
+subplot(2,1,2)
+plot(tau_arr, rxy_bp, Color="blue");
+grid on
+xlabel("Kašnjenje [odb]");
+ylabel("Kroskorelacija ulaz / izlaz");
+xlim([-100 100])
+ylim([0.4 0.9])
+
+text(40,0.98,strcat("Kašnjenje [s] = ", num2str(tau_max_bp*T_samp)))
+
+%%
+
+% Procenjena kašnjenja se uklanjaju iz identifikacionih objekata.
+
+y_prbs_id = y_prbs_vent(tau_max_prbs:end);
+u_prbs_id = u_prbs_vent(1:end-tau_max_prbs+1);
+y_bp_id = y_bp_vent(tau_max_bp:end);
+u_bp_id = u_bp_vent(1:end-tau_max_bp+1);
+
+t_prbs_id = t_prbs_vent(1:end-tau_max_prbs+1);
+t_bp_id = t_bp_vent(1:end-tau_max_bp+1);
+
+% Na kraju se od obrađenih merenja odziva i upravljanja pravi ID objekat
+id_data_prbs = iddata(y_prbs_id,u_prbs_id,T_samp);
+id_data_bp = iddata(y_bp_id,u_bp_id,T_samp);
+
+figure
+subplot(2,1,1)
+plot(t_prbs_id,u_prbs_id,LineStyle="REPLACE_WITH_DASH_DASH",Color="black"); hold all
+plot(t_prbs_id,y_prbs_id,Color="blue");
+xlim([t_prbs_id(1) t_prbs_id(end)])
+ylim([-2 3])
+grid on
+ylabel("Protok vazduha u tunelu [V]")
+legend(["Upravljačka sekvenca (PRBS)", "Odziv sistema"], 'Location', 'northwest')
+title("Konačne vremenske serije podataka za identifikaciju")
+subplot(2,1,2)
+
+plot(t_bp_id,u_bp_id,LineStyle="REPLACE_WITH_DASH_DASH",Color="black"); hold all
+plot(t_bp_id,y_bp_id,Color="blue");
+xlim([t_prbs_id(1) t_prbs_id(end)])
+ylim([-2 3])
+grid on
+ylabel("Protok vazduha u tunelu [V]")
+legend(["Upravljačka sekvenca (BP)", "Odziv sistema"], 'Location', 'northwest')
+
+% figure;
+% plot(iddata_prbs);
+% title("IDDATA objekat za sistem pobudjen PRBS signalom")
+% figure;
+% plot(iddata_bp);
+% title("IDDATA objekat za sistem pobudjen bipolarnom povorkom")
+% 
+% 
+% 
+% %%
+
+##### SOURCE END #####
+--></body></html>
